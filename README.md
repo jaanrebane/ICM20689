@@ -464,7 +464,7 @@ IMU.getFifoTemperature_C(&samples,temp);
 ## <a name="sensor-orientation"></a>Sensor Orientation
 This library transforms all data to a common axis system before it is returned. This axis system is shown below. It is a right handed coordinate system with the z-axis positive down, common in aircraft dynamics.
 
-<img src="https://github.com/finani/Arduino_ICM20689/blob/master/extras/image_1578129299923_1000.jpg" alt="Common Axis System" width="250">
+<img src="https://github.com/finani/ICM20689/blob/master/extras/image_1578129299923_1000.jpg" alt="Common Axis System" width="250">
 
 **Caution!** This axis system is shown relative to the ICM20689 sensor. The sensor may be rotated relative to the breakout board.
 
@@ -479,7 +479,7 @@ This library transforms all data to a common axis system before it is returned. 
 
 # Wiring and Pullups
 
-Please refer to the [ICM20689 datasheet](https://github.com/finani/Arduino_ICM20689/blob/master/extras/InvenSense-ICM-20689-datasheet.pdf). This library should work well for other breakout boards or embedded sensors, please refer to your vendor's pinout diagram.
+Please refer to the [ICM20689 datasheet](https://github.com/finani/ICM20689/blob/master/extras/InvenSense-ICM-20689-datasheet.pdf). This library should work well for other breakout boards or embedded sensors, please refer to your vendor's pinout diagram.
 
 ## I2C
 
