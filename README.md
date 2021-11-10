@@ -305,6 +305,12 @@ The motion threshold is given as a float value between 0 and 1020 mg mapped, whi
 status = IMU.enableWakeOnMotion(400,MPU9250::LP_ACCEL_ODR_31_25HZ);
 ```
 
+**int setUseSPIHS(bool useSPIHS)** set SPI Mode. This function returns a positive value on success and a negative value on failure. (It always returns a positive value because It try to change member variable.)
+
+```C++
+IMU.setUseSPIHS(bool useSPIHS);
+```
+
 ### Common Data Collection Functions
 The functions below are used to collect data from the ICM20689 sensor. Data is returned scaled to engineering units and transformed to a [common axis system](#sensor-orientation).
 
@@ -314,10 +320,23 @@ The functions below are used to collect data from the ICM20689 sensor. Data is r
 ```C++
 IMU.readSensor();
 ```
+
 **int readAcc(double* acc)** reads the accelerometer and stores the newest data in acc, it should be called every time you would like to retrieve data from the accelerometer. This function returns a positive value on success and a negative value on failure.
 
 ```C++
 IMU.readAcc(double* acc);
+```
+
+**int readGyro(double* gyro)** reads the gyroscope and stores the newest data in gyro, it should be called every time you would like to retrieve data from the gyroscope. This function returns a positive value on success and a negative value on failure.
+
+```C++
+IMU.readGyro(double* gyro);
+```
+
+**int readAccGyro(double* accGyro)** reads the accelerometer and the gyroscope, and stores the newest data in accGyro, it should be called every time you would like to retrieve data from the accelerometer and the gyroscope. This function returns a positive value on success and a negative value on failure.
+
+```C++
+IMU.readAccGyro(double* accGyro);
 ```
 
 **float getAccelX_mss()** gets the accelerometer value from the data buffer in the X direction and returns it in units of m/s/s.

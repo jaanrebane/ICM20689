@@ -9,10 +9,12 @@ enableDataReadyInterrupt	KEYWORD2
 disableDataReadyInterrupt	KEYWORD2
 isInterrupted	KEYWORD2
 enableWakeOnMotion  KEYWORD2
-enableWakeOnMotion	KEYWORD2
+setUseSPIHS	KEYWORD2
 enableFifo	KEYWORD2
 readSensor	KEYWORD2
 readAcc	KEYWORD2
+readGyro	KEYWORD2
+readAccGyro	KEYWORD2
 getAccelX_mss	KEYWORD2
 getAccelY_mss	KEYWORD2
 getAccelZ_mss	KEYWORD2
