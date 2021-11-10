@@ -53,8 +53,11 @@ class ICM20689{
     int disableDataReadyInterrupt();
     uint8_t isInterrupted();
     int enableWakeOnMotion(float womThresh_mg,LpAccelOdr odr);
+    int setUseSPIHS(bool useSPIHS);
     int readSensor();
     int readAcc(double* acc);
+    int readGyro(double* gyro);
+    int readAccGyro(double* accGyro);
     double getAccelX_mss();
     double getAccelY_mss();
     double getAccelZ_mss();

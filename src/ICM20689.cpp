@@ -264,7 +264,7 @@ int ICM20689::enableDataReadyInterrupt() {
   _useSPIHS = false;
   /* setting the interrupt */
   if (writeRegister(INT_PIN_CFG,INT_PULSE_50US) < 0){ // setup interrupt, 50 us pulse
-//  if (writeRegister(INT_PIN_CFG,INT_HOLD_ANY) < 0){ // setup interrupt, hold, any read operation
+  // if (writeRegister(INT_PIN_CFG,INT_HOLD_ANY) < 0){ // setup interrupt, hold, any read operation
     return -1;
   }
   if (writeRegister(INT_ENABLE,INT_RAW_RDY_EN) < 0){ // set to data ready
@@ -327,17 +327,9 @@ int ICM20689::enableWakeOnMotion(float womThresh_mg,LpAccelOdr odr) {
   return 1;
 }
 
-/* configures and enables the FIFO buffer  */
-int ICM20689FIFO::enableFifo(bool accel,bool gyro,bool temp) {
-  // use low speed SPI for register setting
-  _useSPIHS = false;
-  if(writeRegister(FIFO_EN,(accel*FIFO_ACCEL)|(gyro*FIFO_GYRO)|(temp*FIFO_TEMP)) < 0){
-    return -2;
-  }
-  _enFifoAccel = accel;
-  _enFifoGyro = gyro;
-  _enFifoTemp = temp;
-  _fifoFrameSize = accel*6 + gyro*6 + temp*2;
+/* set SPI mode */
+int ICM20689::setUseSPIHS(bool useSPIHS) {
+  _useSPIHS = useSPIHS;
   return 1;
 }
 
@@ -359,13 +351,14 @@ int ICM20689::readSensor() {
   _acc[0] = (((double)(tX[0]*_accCounts[0] + tX[1]*_accCounts[1] + tX[2]*_accCounts[2]) * _accelScale) - _accB[0])*_accS[0];
   _acc[1] = (((double)(tY[0]*_accCounts[0] + tY[1]*_accCounts[1] + tY[2]*_accCounts[2]) * _accelScale) - _accB[1])*_accS[1];
   _acc[2] = (((double)(tZ[0]*_accCounts[0] + tZ[1]*_accCounts[1] + tZ[2]*_accCounts[2]) * _accelScale) - _accB[2])*_accS[2];
+  _t = ((((double) _tcounts) - _tempOffset)/_tempScale) + _tempOffset;
   _gyro[0] = ((double)(tX[0]*_gyroCounts[0] + tX[1]*_gyroCounts[1] + tX[2]*_gyroCounts[2]) * _gyroScale) - _gyroB[0];
   _gyro[1] = ((double)(tY[0]*_gyroCounts[0] + tY[1]*_gyroCounts[1] + tY[2]*_gyroCounts[2]) * _gyroScale) - _gyroB[1];
   _gyro[2] = ((double)(tZ[0]*_gyroCounts[0] + tZ[1]*_gyroCounts[1] + tZ[2]*_gyroCounts[2]) * _gyroScale) - _gyroB[2];
-  _t = ((((double) _tcounts) - _tempOffset)/_tempScale) + _tempOffset;
   return 1;
 }
 
+/* reads the most current acc data from ICM20689 */
 int ICM20689::readAcc(double* acc) {
   _useSPIHS = true; // use the high speed SPI for data readout
   // grab the data from the ICM20689
@@ -380,6 +373,49 @@ int ICM20689::readAcc(double* acc) {
   _acc[1] = (((double)(tY[0]*_accCounts[0] + tY[1]*_accCounts[1] + tY[2]*_accCounts[2]) * _accelScale) - _accB[1])*_accS[1];
   _acc[2] = (((double)(tZ[0]*_accCounts[0] + tZ[1]*_accCounts[1] + tZ[2]*_accCounts[2]) * _accelScale) - _accB[2])*_accS[2];
   memcpy(acc, _acc, 3*sizeof(double));
+  return 1;
+}
+
+/* reads the most current gyro data from ICM20689 */
+int ICM20689::readGyro(double* gyro) {
+  _useSPIHS = true; // use the high speed SPI for data readout
+  // grab the data from the ICM20689
+  if (readRegisters(GYRO_OUT, 6, _buffer) < 0) {
+    return -1;
+  }
+  // combine into 16 bit values
+  _gyroCounts[0] = (((int16_t)_buffer[0]) << 8) | _buffer[1];
+  _gyroCounts[1] = (((int16_t)_buffer[2]) << 8) | _buffer[3];
+  _gyroCounts[2] = (((int16_t)_buffer[4]) << 8) | _buffer[5];
+  _gyro[0] = ((double)(tX[0]*_gyroCounts[0] + tX[1]*_gyroCounts[1] + tX[2]*_gyroCounts[2]) * _gyroScale) - _gyroB[0];
+  _gyro[1] = ((double)(tY[0]*_gyroCounts[0] + tY[1]*_gyroCounts[1] + tY[2]*_gyroCounts[2]) * _gyroScale) - _gyroB[1];
+  _gyro[2] = ((double)(tZ[0]*_gyroCounts[0] + tZ[1]*_gyroCounts[1] + tZ[2]*_gyroCounts[2]) * _gyroScale) - _gyroB[2];
+  memcpy(gyro, _gyro, 3*sizeof(double));
+  return 1;
+}
+
+/* reads the most current accGyro data from ICM20689 */
+int ICM20689::readAccGyro(double* accGyro) {
+  _useSPIHS = true; // use the high speed SPI for data readout
+  // grab the data from the ICM20689
+  if (readRegisters(ACCEL_OUT, 15, _buffer) < 0) {
+    return -1;
+  }
+  // combine into 16 bit values
+  _accCounts[0] = (((int16_t)_buffer[0]) << 8) | _buffer[1];
+  _accCounts[1] = (((int16_t)_buffer[2]) << 8) | _buffer[3];
+  _accCounts[2] = (((int16_t)_buffer[4]) << 8) | _buffer[5];
+  _gyroCounts[0] = (((int16_t)_buffer[8]) << 8) | _buffer[9];
+  _gyroCounts[1] = (((int16_t)_buffer[10]) << 8) | _buffer[11];
+  _gyroCounts[2] = (((int16_t)_buffer[12]) << 8) | _buffer[13];
+  _acc[0] = (((double)(tX[0]*_accCounts[0] + tX[1]*_accCounts[1] + tX[2]*_accCounts[2]) * _accelScale) - _accB[0])*_accS[0];
+  _acc[1] = (((double)(tY[0]*_accCounts[0] + tY[1]*_accCounts[1] + tY[2]*_accCounts[2]) * _accelScale) - _accB[1])*_accS[1];
+  _acc[2] = (((double)(tZ[0]*_accCounts[0] + tZ[1]*_accCounts[1] + tZ[2]*_accCounts[2]) * _accelScale) - _accB[2])*_accS[2];
+  _gyro[0] = ((double)(tX[0]*_gyroCounts[0] + tX[1]*_gyroCounts[1] + tX[2]*_gyroCounts[2]) * _gyroScale) - _gyroB[0];
+  _gyro[1] = ((double)(tY[0]*_gyroCounts[0] + tY[1]*_gyroCounts[1] + tY[2]*_gyroCounts[2]) * _gyroScale) - _gyroB[1];
+  _gyro[2] = ((double)(tZ[0]*_gyroCounts[0] + tZ[1]*_gyroCounts[1] + tZ[2]*_gyroCounts[2]) * _gyroScale) - _gyroB[2];
+  memcpy(&accGyro[0], _acc, 3*sizeof(double));
+  memcpy(&accGyro[3], _gyro, 3*sizeof(double));
   return 1;
 }
 
@@ -431,6 +467,20 @@ double ICM20689::getGyroZ_dps() {
 /* returns the die temperature, C */
 double ICM20689::getTemperature_C() {
   return _t;
+}
+
+/* configures and enables the FIFO buffer  */
+int ICM20689sFIFO::enableFifo(bool accel,bool gyro,bool temp) {
+  // use low speed SPI for register setting
+  _useSPIHS = false;
+  if(writeRegister(FIFO_EN,(accel*FIFO_ACCEL)|(gyro*FIFO_GYRO)|(temp*FIFO_TEMP)) < 0){
+    return -2;
+  }
+  _enFifoAccel = accel;
+  _enFifoGyro = gyro;
+  _enFifoTemp = temp;
+  _fifoFrameSize = accel*6 + gyro*6 + temp*2;
+  return 1;
 }
 
 /* reads data from the ICM20689 FIFO and stores in buffer */
