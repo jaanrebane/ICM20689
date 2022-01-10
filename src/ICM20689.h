@@ -31,17 +31,6 @@ class ICM20689{
       DLPF_BANDWIDTH_10HZ, // A_DLPF_CFG 5
       DLPF_BANDWIDTH_5HZ // A_DLPF_CFG 6
     };
-    enum LpAccelOdr
-    {
-      LP_ACCEL_ODR_500HZ = 1,
-      LP_ACCEL_ODR_250HZ = 3,
-      LP_ACCEL_ODR_125HZ = 7,
-      LP_ACCEL_ODR_62_50HZ = 15,
-      LP_ACCEL_ODR_31_25HZ = 31,
-      LP_ACCEL_ODR_15_63HZ = 63,
-      LP_ACCEL_ODR_7_81HZ = 127,
-      LP_ACCEL_ODR_3_91HZ = 255
-    };
     ICM20689(TwoWire &bus,uint8_t address);
     ICM20689(SPIClass &bus,uint8_t csPin);
     int begin();
@@ -52,7 +41,6 @@ class ICM20689{
     int enableDataReadyInterrupt();
     int disableDataReadyInterrupt();
     uint8_t isInterrupted();
-    int enableWakeOnMotion(float womThresh_mg,LpAccelOdr odr);
     int setUseSPIHS(bool useSPIHS);
     int readSensor();
     int readAcc(double* acc);
@@ -110,10 +98,7 @@ class ICM20689{
     double _acc[3] = {};
     double _gyro[3] = {};
     double _t = 0.0;
-    // interrupt
     uint8_t _isInterrupted = 0;
-    // wake on motion
-    uint8_t _womThreshold;
     // scale factors
     double _accelScale = 0.0;
     double _gyroScale = 0.0;
@@ -181,21 +166,20 @@ class ICM20689{
     const uint8_t INT_DISABLE = 0x00;
     const uint8_t INT_HOLD_ANY = 0x30;
     const uint8_t INT_PULSE_50US = 0x00;
-    const uint8_t INT_WOM_EN = 0xE0;
+    const uint8_t INT_WOM_EN = 0x40;
     const uint8_t INT_RAW_RDY_EN = 0x01;
     const uint8_t INT_STATUS = 0x3A;
-    const uint8_t PWR_MGMT_1 = 0x6B;
+    const uint8_t PWR_MGMNT_1 = 0x6B;
     const uint8_t PWR_CYCLE = 0x20;
     const uint8_t PWR_RESET = 0x80;
     const uint8_t CLOCK_SEL_PLL = 0x01;
-    const uint8_t PWR_MGMT_2 = 0x6C;
+    const uint8_t PWR_MGMNT_2 = 0x6C;
     const uint8_t SEN_ENABLE = 0x00;
     const uint8_t DIS_GYRO = 0x07;
     const uint8_t DIS_ACC = 0x38;
     const uint8_t MOT_DETECT_CTRL = 0x69;
     const uint8_t ACCEL_INTEL_EN = 0x80;
     const uint8_t ACCEL_INTEL_MODE = 0x40;
-    const uint8_t ACCEL_WOM_THR = 0x1F;
     const uint8_t WHO_AM_I = 0x75;
     const uint8_t FIFO_EN = 0x23;
     const uint8_t FIFO_TEMP = 0x80;
@@ -209,7 +193,7 @@ class ICM20689{
     int whoAmI();
 };
 
-class ICM20689FIFO: public ICM20689 {
+class ICM20689_FIFO: public ICM20689 {
   public:
     using ICM20689::ICM20689;
     int enableFifo(bool accel,bool gyro,bool temp);

@@ -33,15 +33,15 @@ int ICM20689::begin(){
     _i2c->setClock(_i2cRate);
   }
   // select clock source to gyro
-  if(writeRegister(PWR_MGMT_1,CLOCK_SEL_PLL) < 0) {
+  if(writeRegister(PWR_MGMNT_1,CLOCK_SEL_PLL) < 0) {
     return -1;
   }
   // reset the ICM20689
-  writeRegister(PWR_MGMT_1,PWR_RESET);
+  writeRegister(PWR_MGMNT_1,PWR_RESET);
   // wait for ICM20689 to come back up
   delay(1);
   // select clock source to gyro
-  if(writeRegister(PWR_MGMT_1,CLOCK_SEL_PLL) < 0) {
+  if(writeRegister(PWR_MGMNT_1,CLOCK_SEL_PLL) < 0) {
     return -2;
   }
   // check the WHO AM I byte, expected value is 0x98 (decimal 152)
@@ -49,7 +49,7 @@ int ICM20689::begin(){
     return -3;
   }
   // enable accelerometer and gyro
-  if(writeRegister(PWR_MGMT_2,SEN_ENABLE) < 0) {
+  if(writeRegister(PWR_MGMNT_2,SEN_ENABLE) < 0) {
     return -4;
   }
   // setting accel range to 16G as default
@@ -285,46 +285,9 @@ int ICM20689::disableDataReadyInterrupt() {
 
 /* disables the data ready interrupt */
 uint8_t ICM20689::isInterrupted() {
-  // use the high speed SPI for data readout
-  _useSPIHS = false;
+  _useSPIHS = false; // use the high speed SPI for data readout
   readRegisters(INT_STATUS, 1, &_isInterrupted);
   return _isInterrupted & 0x01;
-}
-
-/* configures and enables wake on motion, low power mode */
-int ICM20689::enableWakeOnMotion(float womThresh_mg,LpAccelOdr odr) {
-  // use low speed SPI for register setting
-  _useSPIHS = false;
-  // reset the MPU9250
-  writeRegister(PWR_MGMT_1,PWR_RESET);
-  // wait for MPU-9250 to come back up
-  delay(1);
-  if(writeRegister(PWR_MGMT_1,0x00) < 0){ // cycle 0, sleep 0, standby 0
-    return -1;
-  }
-  if(writeRegister(PWR_MGMT_2,DIS_GYRO) < 0){ // disable gyro measurements
-    return -2;
-  }
-  if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_218HZ) < 0){ // setting accel bandwidth to 184Hz
-    return -3;
-  }
-  if(writeRegister(INT_ENABLE,INT_WOM_EN) < 0){ // enabling interrupt to wake on motion
-    return -4;
-  }
-  _womThreshold = map(womThresh_mg, 0, 1020, 0, 255);
-  if(writeRegister(ACCEL_WOM_THR,_womThreshold) < 0){ // setting wake on motion threshold
-    return -5;
-  }
-  if(writeRegister(MOT_DETECT_CTRL,(ACCEL_INTEL_EN | ACCEL_INTEL_MODE)) < 0){ // enabling accel hardware intelligence
-    return -6;
-  }
-  if(writeRegister(SMPLRT_DIV,(uint8_t)odr) < 0){ // set frequency of wakeup
-    return -7;
-  }
-  if(writeRegister(PWR_MGMT_1,PWR_CYCLE) < 0){ // switch to accel low power mode
-    return -8;
-  }
-  return 1;
 }
 
 /* set SPI mode */
@@ -470,7 +433,7 @@ double ICM20689::getTemperature_C() {
 }
 
 /* configures and enables the FIFO buffer  */
-int ICM20689sFIFO::enableFifo(bool accel,bool gyro,bool temp) {
+int ICM20689_FIFO::enableFifo(bool accel,bool gyro,bool temp) {
   // use low speed SPI for register setting
   _useSPIHS = false;
   if(writeRegister(FIFO_EN,(accel*FIFO_ACCEL)|(gyro*FIFO_GYRO)|(temp*FIFO_TEMP)) < 0){
@@ -484,7 +447,7 @@ int ICM20689sFIFO::enableFifo(bool accel,bool gyro,bool temp) {
 }
 
 /* reads data from the ICM20689 FIFO and stores in buffer */
-int ICM20689FIFO::readFifo() {
+int ICM20689_FIFO::readFifo() {
   _useSPIHS = true; // use the high speed SPI for data readout
   // get the fifo size
   readRegisters(FIFO_COUNT, 2, _buffer);
@@ -529,43 +492,43 @@ int ICM20689FIFO::readFifo() {
 }
 
 /* returns the accelerometer FIFO size and data in the x direction, m/s/s */
-void ICM20689FIFO::getFifoAccelX_mss(size_t *size,double* data) {
+void ICM20689_FIFO::getFifoAccelX_mss(size_t *size,double* data) {
   *size = _aSize;
   memcpy(data,_axFifo,_aSize*sizeof(double));
 }
 
 /* returns the accelerometer FIFO size and data in the y direction, m/s/s */
-void ICM20689FIFO::getFifoAccelY_mss(size_t *size,double* data) {
+void ICM20689_FIFO::getFifoAccelY_mss(size_t *size,double* data) {
   *size = _aSize;
   memcpy(data,_ayFifo,_aSize*sizeof(double));
 }
 
 /* returns the accelerometer FIFO size and data in the z direction, m/s/s */
-void ICM20689FIFO::getFifoAccelZ_mss(size_t *size,double* data) {
+void ICM20689_FIFO::getFifoAccelZ_mss(size_t *size,double* data) {
   *size = _aSize;
   memcpy(data,_azFifo,_aSize*sizeof(double));
 }
 
 /* returns the gyroscope FIFO size and data in the x direction, rad/s */
-void ICM20689FIFO::getFifoGyroX_rads(size_t *size,double* data) {
+void ICM20689_FIFO::getFifoGyroX_rads(size_t *size,double* data) {
   *size = _gSize;
   memcpy(data,_gxFifo,_gSize*sizeof(double));
 }
 
 /* returns the gyroscope FIFO size and data in the y direction, rad/s */
-void ICM20689FIFO::getFifoGyroY_rads(size_t *size,double* data) {
+void ICM20689_FIFO::getFifoGyroY_rads(size_t *size,double* data) {
   *size = _gSize;
   memcpy(data,_gyFifo,_gSize*sizeof(double));
 }
 
 /* returns the gyroscope FIFO size and data in the z direction, rad/s */
-void ICM20689FIFO::getFifoGyroZ_rads(size_t *size,double* data) {
+void ICM20689_FIFO::getFifoGyroZ_rads(size_t *size,double* data) {
   *size = _gSize;
   memcpy(data,_gzFifo,_gSize*sizeof(double));
 }
 
 /* returns the die temperature FIFO size and data, C */
-void ICM20689FIFO::getFifoTemperature_C(size_t *size,double* data) {
+void ICM20689_FIFO::getFifoTemperature_C(size_t *size,double* data) {
   *size = _tSize;
   memcpy(data,_tFifo,_tSize*sizeof(double));
 }
