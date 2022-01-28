@@ -1,4 +1,5 @@
 #include "ICM20689.h"
+// TODO: Need to test this with the ICM20689
 
 // an ICM20689 object with the ICM20689 sensor on SPI bus 0 and chip select pin 10
 ICM20689 IMU(SPI,10);
@@ -32,7 +33,7 @@ void setup() {
 
 void loop() {}
 
-void getIMU(){
+void getIMU() {
   // read the sensor
   IMU.readSensor();
   // display the data

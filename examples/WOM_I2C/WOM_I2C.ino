@@ -1,4 +1,5 @@
 #include "ICM20689.h"
+// TODO: Need to test this with the ICM20689
 
 // an ICM20689 object with the ICM20689 sensor on I2C bus 0 with address 0x68
 ICM20689 IMU(Wire,0x68);

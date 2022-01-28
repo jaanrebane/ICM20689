@@ -2,21 +2,21 @@
 #include "ICM20689.h"
 
 /* ICM20689 object, input the I2C bus and address */
-ICM20689::ICM20689(TwoWire &bus,uint8_t address){
+ICM20689::ICM20689(TwoWire &bus,uint8_t address) {
   _i2c = &bus; // I2C bus
   _address = address; // I2C address
   _useSPI = false; // set to use I2C
 }
 
 /* ICM20689 object, input the SPI bus and chip select pin */
-ICM20689::ICM20689(SPIClass &bus,uint8_t csPin){
+ICM20689::ICM20689(SPIClass &bus,uint8_t csPin) {
   _spi = &bus; // SPI bus
   _csPin = csPin; // chip select pin
   _useSPI = true; // set to use SPI
 }
 
 /* starts communication with the ICM20689 */
-int ICM20689::begin(){
+int ICM20689::begin() {
   if( _useSPI ) { // using SPI for communication
     // use low speed SPI for register setting
     _useSPIHS = false;
@@ -33,15 +33,15 @@ int ICM20689::begin(){
     _i2c->setClock(_i2cRate);
   }
   // select clock source to gyro
-  if(writeRegister(PWR_MGMNT_1,CLOCK_SEL_PLL) < 0) {
+  if(writeRegister(PWR_MGMT_1,CLOCK_SEL_PLL) < 0) {
     return -1;
   }
   // reset the ICM20689
-  writeRegister(PWR_MGMNT_1,PWR_RESET);
+  writeRegister(PWR_MGMT_1,PWR_RESET);
   // wait for ICM20689 to come back up
   delay(1);
   // select clock source to gyro
-  if(writeRegister(PWR_MGMNT_1,CLOCK_SEL_PLL) < 0) {
+  if(writeRegister(PWR_MGMT_1,CLOCK_SEL_PLL) < 0) {
     return -2;
   }
   // check the WHO AM I byte, expected value is 0x98 (decimal 152)
@@ -49,7 +49,7 @@ int ICM20689::begin(){
     return -3;
   }
   // enable accelerometer and gyro
-  if(writeRegister(PWR_MGMNT_2,SEN_ENABLE) < 0) {
+  if(writeRegister(PWR_MGMT_2,SEN_ENABLE) < 0) {
     return -4;
   }
   // setting accel range to 16G as default
@@ -91,7 +91,7 @@ int ICM20689::setAccelRange(AccelRange range) {
   switch(range) {
     case ACCEL_RANGE_2G: {
       // setting the accel range to 2G
-      if(writeRegister(ACCEL_CONFIG,ACCEL_FS_SEL_2G) < 0){
+      if(writeRegister(ACCEL_CONFIG,ACCEL_FS_SEL_2G) < 0) {
         return -1;
       }
       _accelScale = G * 2.0f/32767.5f; // setting the accel scale to 2G
@@ -99,7 +99,7 @@ int ICM20689::setAccelRange(AccelRange range) {
     }
     case ACCEL_RANGE_4G: {
       // setting the accel range to 4G
-      if(writeRegister(ACCEL_CONFIG,ACCEL_FS_SEL_4G) < 0){
+      if(writeRegister(ACCEL_CONFIG,ACCEL_FS_SEL_4G) < 0) {
         return -1;
       }
       _accelScale = G * 4.0f/32767.5f; // setting the accel scale to 4G
@@ -107,7 +107,7 @@ int ICM20689::setAccelRange(AccelRange range) {
     }
     case ACCEL_RANGE_8G: {
       // setting the accel range to 8G
-      if(writeRegister(ACCEL_CONFIG,ACCEL_FS_SEL_8G) < 0){
+      if(writeRegister(ACCEL_CONFIG,ACCEL_FS_SEL_8G) < 0) {
         return -1;
       }
       _accelScale = G * 8.0f/32767.5f; // setting the accel scale to 8G
@@ -115,7 +115,7 @@ int ICM20689::setAccelRange(AccelRange range) {
     }
     case ACCEL_RANGE_16G: {
       // setting the accel range to 16G
-      if(writeRegister(ACCEL_CONFIG,ACCEL_FS_SEL_16G) < 0){
+      if(writeRegister(ACCEL_CONFIG,ACCEL_FS_SEL_16G) < 0) {
         return -1;
       }
       _accelScale = G * 16.0f/32767.5f; // setting the accel scale to 16G
@@ -133,7 +133,7 @@ int ICM20689::setGyroRange(GyroRange range) {
   switch(range) {
     case GYRO_RANGE_250DPS: {
       // setting the gyro range to 250DPS
-      if(writeRegister(GYRO_CONFIG,GYRO_FS_SEL_250DPS) < 0){
+      if(writeRegister(GYRO_CONFIG,GYRO_FS_SEL_250DPS) < 0) {
         return -1;
       }
       _gyroScale = 250.0f/32767.5f * _d2r; // setting the gyro scale to 250DPS
@@ -141,7 +141,7 @@ int ICM20689::setGyroRange(GyroRange range) {
     }
     case GYRO_RANGE_500DPS: {
       // setting the gyro range to 500DPS
-      if(writeRegister(GYRO_CONFIG,GYRO_FS_SEL_500DPS) < 0){
+      if(writeRegister(GYRO_CONFIG,GYRO_FS_SEL_500DPS) < 0) {
         return -1;
       }
       _gyroScale = 500.0f/32767.5f * _d2r; // setting the gyro scale to 500DPS
@@ -149,7 +149,7 @@ int ICM20689::setGyroRange(GyroRange range) {
     }
     case GYRO_RANGE_1000DPS: {
       // setting the gyro range to 1000DPS
-      if(writeRegister(GYRO_CONFIG,GYRO_FS_SEL_1000DPS) < 0){
+      if(writeRegister(GYRO_CONFIG,GYRO_FS_SEL_1000DPS) < 0) {
         return -1;
       }
       _gyroScale = 1000.0f/32767.5f * _d2r; // setting the gyro scale to 1000DPS
@@ -157,7 +157,7 @@ int ICM20689::setGyroRange(GyroRange range) {
     }
     case GYRO_RANGE_2000DPS: {
       // setting the gyro range to 2000DPS
-      if(writeRegister(GYRO_CONFIG,GYRO_FS_SEL_2000DPS) < 0){
+      if(writeRegister(GYRO_CONFIG,GYRO_FS_SEL_2000DPS) < 0) {
         return -1;
       }
       _gyroScale = 2000.0f/32767.5f * _d2r; // setting the gyro scale to 2000DPS
@@ -174,65 +174,65 @@ int ICM20689::setDlpfBandwidth(DlpfBandwidth bandwidth) {
   _useSPIHS = false;
   switch(bandwidth) {
     case DLPF_BANDWIDTH_MAX: {
-      if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_1046HZ) < 0){ // setting accel bandwidth to 218Hz
+      if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_1046HZ) < 0) { // setting accel bandwidth to 218Hz
         return -1;
       }
       readRegisters(GYRO_CONFIG,1,_buffer);
-      if(writeRegister(GYRO_CONFIG,((_buffer[0] & 0xFC) | GYRO_FCHOICE_B_8173HZ)) < 0){ // setting gyro bandwidth to 250Hz
+      if(writeRegister(GYRO_CONFIG,((_buffer[0] & 0xFC) | GYRO_FCHOICE_B_8173HZ)) < 0) { // setting gyro bandwidth to 250Hz
         return -2;
       }
       break;
     }
     case DLPF_BANDWIDTH_218HZ: {
-      if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_218HZ) < 0){ // setting accel bandwidth to 218Hz
+      if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_218HZ) < 0) { // setting accel bandwidth to 218Hz
         return -1;
       }
-      if(writeRegister(CONFIG,GYRO_DLPF_250HZ) < 0){ // setting gyro bandwidth to 250Hz
+      if(writeRegister(CONFIG,GYRO_DLPF_250HZ) < 0) { // setting gyro bandwidth to 250Hz
         return -2;
       }
       break;
     }
     case DLPF_BANDWIDTH_99HZ: {
-      if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_99HZ) < 0){ // setting accel bandwidth to 99Hz
+      if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_99HZ) < 0) { // setting accel bandwidth to 99Hz
         return -1;
       }
-      if(writeRegister(CONFIG,GYRO_DLPF_92HZ) < 0){ // setting gyro bandwidth to 92Hz
+      if(writeRegister(CONFIG,GYRO_DLPF_92HZ) < 0) { // setting gyro bandwidth to 92Hz
         return -2;
       }
       break;
     }
     case DLPF_BANDWIDTH_45HZ: {
-      if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_45HZ) < 0){ // setting accel bandwidth to 45Hz
+      if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_45HZ) < 0) { // setting accel bandwidth to 45Hz
         return -1;
       }
-      if(writeRegister(CONFIG,GYRO_DLPF_41HZ) < 0){ // setting gyro bandwidth to 41Hz
+      if(writeRegister(CONFIG,GYRO_DLPF_41HZ) < 0) { // setting gyro bandwidth to 41Hz
         return -2;
       }
       break;
     }
     case DLPF_BANDWIDTH_21HZ: {
-      if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_21HZ) < 0){ // setting accel bandwidth to 21Hz
+      if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_21HZ) < 0) { // setting accel bandwidth to 21Hz
         return -1;
       }
-      if(writeRegister(CONFIG,GYRO_DLPF_20HZ) < 0){ // setting gyro bandwidth to 20Hz
+      if(writeRegister(CONFIG,GYRO_DLPF_20HZ) < 0) { // setting gyro bandwidth to 20Hz
         return -2;
       }
       break;
     }
     case DLPF_BANDWIDTH_10HZ: {
-      if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_10HZ) < 0){ // setting accel bandwidth to 10Hz
+      if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_10HZ) < 0) { // setting accel bandwidth to 10Hz
         return -1;
       }
-      if(writeRegister(CONFIG,GYRO_DLPF_10HZ) < 0){ // setting gyro bandwidth to 10Hz
+      if(writeRegister(CONFIG,GYRO_DLPF_10HZ) < 0) { // setting gyro bandwidth to 10Hz
         return -2;
       }
       break;
     }
     case DLPF_BANDWIDTH_5HZ: {
-      if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_5HZ) < 0){ // setting accel bandwidth to 5Hz
+      if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_5HZ) < 0) { // setting accel bandwidth to 5Hz
         return -1;
       }
-      if(writeRegister(CONFIG,GYRO_DLPF_5HZ) < 0){ // setting gyro bandwidth to 5Hz
+      if(writeRegister(CONFIG,GYRO_DLPF_5HZ) < 0) { // setting gyro bandwidth to 5Hz
         return -2;
       }
       break;
@@ -247,11 +247,11 @@ int ICM20689::setSrd(uint8_t srd) {
   // use low speed SPI for register setting
   _useSPIHS = false;
   /* setting the sample rate divider to 19 */
-  if(writeRegister(SMPLRT_DIV,19) < 0){ // setting the sample rate divider
+  if(writeRegister(SMPLRT_DIV,19) < 0) { // setting the sample rate divider
     return -1;
   }
   /* setting the sample rate divider */
-  if(writeRegister(SMPLRT_DIV,srd) < 0){ // setting the sample rate divider
+  if(writeRegister(SMPLRT_DIV,srd) < 0) { // setting the sample rate divider
     return -4;
   }
   _srd = srd;
@@ -263,11 +263,11 @@ int ICM20689::enableDataReadyInterrupt() {
   // use low speed SPI for register setting
   _useSPIHS = false;
   /* setting the interrupt */
-  if (writeRegister(INT_PIN_CFG,INT_PULSE_50US) < 0){ // setup interrupt, 50 us pulse
-  // if (writeRegister(INT_PIN_CFG,INT_HOLD_ANY) < 0){ // setup interrupt, hold, any read operation
+  if (writeRegister(INT_PIN_CFG,INT_PULSE_50US) < 0) { // setup interrupt, 50 us pulse
+  // if (writeRegister(INT_PIN_CFG,INT_HOLD_ANY) < 0) { // setup interrupt, hold, any read operation
     return -1;
   }
-  if (writeRegister(INT_ENABLE,INT_RAW_RDY_EN) < 0){ // set to data ready
+  if (writeRegister(INT_ENABLE,INT_RAW_RDY_EN) < 0) { // set to data ready
     return -2;
   }
   return 1;
@@ -277,7 +277,7 @@ int ICM20689::enableDataReadyInterrupt() {
 int ICM20689::disableDataReadyInterrupt() {
   // use low speed SPI for register setting
   _useSPIHS = false;
-  if(writeRegister(INT_ENABLE,INT_DISABLE) < 0){ // disable interrupt
+  if(writeRegister(INT_ENABLE,INT_DISABLE) < 0) { // disable interrupt
     return -1;
   }
   return 1;
@@ -436,7 +436,7 @@ double ICM20689::getTemperature_C() {
 int ICM20689_FIFO::enableFifo(bool accel,bool gyro,bool temp) {
   // use low speed SPI for register setting
   _useSPIHS = false;
-  if(writeRegister(FIFO_EN,(accel*FIFO_ACCEL)|(gyro*FIFO_GYRO)|(temp*FIFO_TEMP)) < 0){
+  if(writeRegister(FIFO_EN,(accel*FIFO_ACCEL)|(gyro*FIFO_GYRO)|(temp*FIFO_TEMP)) < 0) {
     return -2;
   }
   _enFifoAccel = accel;
@@ -725,9 +725,9 @@ void ICM20689::setAccelCalZ(double bias,double scaleFactor) {
 }
 
 /* writes a byte to ICM20689 register given a register address and data */
-int ICM20689::writeRegister(uint8_t subAddress, uint8_t data){
+int ICM20689::writeRegister(uint8_t subAddress, uint8_t data) {
   /* write data to device */
-  if( _useSPI ){
+  if( _useSPI ) {
     _spi->beginTransaction(SPISettings(SPI_LS_CLOCK, MSBFIRST, SPI_MODE3)); // begin the transaction
     digitalWrite(_csPin,LOW); // select the ICM20689 chip
     _spi->transfer(subAddress); // write the register address
@@ -756,10 +756,10 @@ int ICM20689::writeRegister(uint8_t subAddress, uint8_t data){
 }
 
 /* reads registers from ICM20689 given a starting register address, number of bytes, and a pointer to store data */
-int ICM20689::readRegisters(uint8_t subAddress, uint8_t count, uint8_t* dest){
-  if( _useSPI ){
+int ICM20689::readRegisters(uint8_t subAddress, uint8_t count, uint8_t* dest) {
+  if( _useSPI ) {
     // begin the transaction
-    if(_useSPIHS){
+    if(_useSPIHS) {
       _spi->beginTransaction(SPISettings(SPI_HS_CLOCK, MSBFIRST, SPI_MODE3));
     }
     else{
@@ -767,7 +767,7 @@ int ICM20689::readRegisters(uint8_t subAddress, uint8_t count, uint8_t* dest){
     }
     digitalWrite(_csPin,LOW); // select the ICM20689 chip
     _spi->transfer(subAddress | SPI_READ); // specify the starting register address
-    for(uint8_t i = 0; i < count; i++){
+    for(uint8_t i = 0; i < count; i++) {
       dest[i] = _spi->transfer(0x00); // read the data
     }
     digitalWrite(_csPin,HIGH); // deselect the ICM20689 chip
@@ -780,7 +780,7 @@ int ICM20689::readRegisters(uint8_t subAddress, uint8_t count, uint8_t* dest){
     _i2c->endTransmission(false);
     _numBytes = _i2c->requestFrom(_address, count); // specify the number of bytes to receive
     if (_numBytes == count) {
-      for(uint8_t i = 0; i < count; i++){
+      for(uint8_t i = 0; i < count; i++) {
         dest[i] = _i2c->read();
       }
       return 1;
@@ -791,7 +791,7 @@ int ICM20689::readRegisters(uint8_t subAddress, uint8_t count, uint8_t* dest){
 }
 
 /* gets the ICM20689 WHO_AM_I register value, expected to be 0x98 */
-int ICM20689::whoAmI(){
+int ICM20689::whoAmI() {
   // read the WHO AM I register
   if (readRegisters(WHO_AM_I,1,_buffer) < 0) {
     return -1;

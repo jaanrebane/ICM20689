@@ -1,11 +1,12 @@
 #include "ICM20689.h"
+// TODO: Need to test this with the ICM20689
 
 // an ICM20689 object with the ICM20689 sensor on SPI bus 0 and chip select pin 10
-ICM20689FIFO IMU(SPI,10);
+ICM20689_FIFO IMU(SPI,10);
 int status;
 
 // variables to hold FIFO data, these need to be large enough to hold the data
-float ax[100], ay[100], az[100];
+double ax[100], ay[100], az[100];
 size_t fifoSize;
 
 void setup() {

@@ -169,11 +169,11 @@ class ICM20689{
     const uint8_t INT_WOM_EN = 0x40;
     const uint8_t INT_RAW_RDY_EN = 0x01;
     const uint8_t INT_STATUS = 0x3A;
-    const uint8_t PWR_MGMNT_1 = 0x6B;
+    const uint8_t PWR_MGMT_1 = 0x6B;
     const uint8_t PWR_CYCLE = 0x20;
     const uint8_t PWR_RESET = 0x80;
     const uint8_t CLOCK_SEL_PLL = 0x01;
-    const uint8_t PWR_MGMNT_2 = 0x6C;
+    const uint8_t PWR_MGMT_2 = 0x6C;
     const uint8_t SEN_ENABLE = 0x00;
     const uint8_t DIS_GYRO = 0x07;
     const uint8_t DIS_ACC = 0x38;
