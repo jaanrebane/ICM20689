@@ -71,7 +71,7 @@ int ICM20689::begin() {
   if(writeRegister(CONFIG,GYRO_DLPF_250HZ) < 0) { // setting gyro bandwidth to 184Hz
     return -8;
   }
-  _bandwidth = DLPF_BANDWIDTH_218HZ;
+  _bandwidth = DLPF_BANDWIDTH_MAX;
   // setting the sample rate divider to 0 as default
   if(writeRegister(SMPLRT_DIV,0x00) < 0) {
     return -9;
