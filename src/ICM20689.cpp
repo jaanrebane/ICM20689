@@ -64,8 +64,8 @@ int ICM20689::begin() {
   }
   _gyroScale = 2000.0f/32767.5f * _d2r; // setting the gyro scale to 2000DPS
   _gyroRange = GYRO_RANGE_2000DPS;
-  // setting bandwidth to 218Hz as default
-  if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_218HZ) < 0) {
+  // setting bandwidth to 1046Hz as default
+  if(writeRegister(ACCEL_CONFIG2,ACCEL_DLPF_1046HZ) < 0) {
     return -7;
   }
   if(writeRegister(CONFIG,GYRO_DLPF_250HZ) < 0) { // setting gyro bandwidth to 184Hz
@@ -77,9 +77,9 @@ int ICM20689::begin() {
     return -9;
   }
   // estimate gyro bias
-  if (calibrateGyro() < 0) {
-    return -10;
-  }
+  // if (calibrateGyro() < 0) {
+  //   return -10;
+  // }
   // successful init, return 1
   return 1;
 }
@@ -354,6 +354,20 @@ int ICM20689::readGyro(double* gyro) {
   _gyro[1] = ((double)(tY[0]*_gyroCounts[0] + tY[1]*_gyroCounts[1] + tY[2]*_gyroCounts[2]) * _gyroScale) - _gyroB[1];
   _gyro[2] = ((double)(tZ[0]*_gyroCounts[0] + tZ[1]*_gyroCounts[1] + tZ[2]*_gyroCounts[2]) * _gyroScale) - _gyroB[2];
   memcpy(gyro, _gyro, 3*sizeof(double));
+  return 1;
+}
+
+/* reads the most current temp data from ICM20689 */
+int ICM20689::readTemp(double& temp) {
+  _useSPIHS = true; // use the high speed SPI for data readout
+  // grab the data from the ICM20689
+  if (readRegisters(TEMP_OUT, 2, _buffer) < 0) {
+    return -1;
+  }
+  // combine into 16 bit values
+  _tcounts = (((int16_t)_buffer[0]) << 8) | _buffer[1];
+  _t = ((((double) _tcounts) - _tempOffset)/_tempScale) + _tempOffset;
+  memcpy(&temp, &_t, sizeof(double));
   return 1;
 }
 

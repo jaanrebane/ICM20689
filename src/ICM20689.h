@@ -45,6 +45,7 @@ class ICM20689{
     int readSensor();
     int readAcc(double* acc);
     int readGyro(double* gyro);
+    int readTemp(double& temp);
     int readAccGyro(double* accGyro);
     double getAccelX_mss();
     double getAccelY_mss();

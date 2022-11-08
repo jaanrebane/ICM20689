@@ -14,6 +14,7 @@ enableFifo	KEYWORD2
 readSensor	KEYWORD2
 readAcc	KEYWORD2
 readGyro	KEYWORD2
+readTemp	KEYWORD2
 readAccGyro	KEYWORD2
 getAccelX_mss	KEYWORD2
 getAccelY_mss	KEYWORD2
