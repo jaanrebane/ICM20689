@@ -43,17 +43,17 @@ void getIMU() {
 
   // read the sensor
   IMU.readSensor();
-  
+
   // display the raw data
-  Serial.print(IMU.getAccelX_count());
+  Serial.print(IMU.getAccelX_raw());
   Serial.print("\t");
-  Serial.print(IMU.getAccelY_count());
+  Serial.print(IMU.getAccelY_raw());
   Serial.print("\t");
-  Serial.print(IMU.getAccelZ_count());
+  Serial.print(IMU.getAccelZ_raw());
   Serial.print("\t");
-  Serial.print(IMU.getGyroX_count());
+  Serial.print(IMU.getGyroX_raw());
   Serial.print("\t");
-  Serial.print(IMU.getGyroY_count());
+  Serial.print(IMU.getGyroY_raw());
   Serial.print("\t");
-  Serial.println(IMU.getGyroZ_count());
+  Serial.println(IMU.getGyroZ_raw());
 }
