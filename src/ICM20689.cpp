@@ -475,28 +475,28 @@ int16_t ICM20689::getAccelX_count() {
 
 /* returns the accelerometer measurement in the y direction, raw 16-bit integer
  */
-int16_t ICM20689::getAccelY_count() {
+int16_t ICM20689::getAccelY_raw() {
 	return _accCounts[1];
 }
 
 /* returns the accelerometer measurement in the z direction, raw 16-bit integer
  */
-int16_t ICM20689::getAccelZ_count() {
+int16_t ICM20689::getAccelZ_raw() {
 	return _accCounts[2];
 }
 
-/* returns the gyroscople measurement in the x direction, raw 16-bit integer */
-int16_t ICM20689::getGyroX_count() {
+/* returns the gyroscope measurement in the x direction, raw 16-bit integer */
+int16_t ICM20689::getGyroX_raw() {
 	return _gyroCounts[0];
 }
 
-/* returns the gyroscople measurement in the y direction, raw 16-bit integer */
-int16_t ICM20689::getGyroY_count() {
+/* returns the gyroscope measurement in the y direction, raw 16-bit integer */
+int16_t ICM20689::getGyroY_raw() {
 	return _gyroCounts[1];
 }
 
-/* returns the gyroscople measurement in the z direction, raw 16-bit integer */
-int16_t ICM20689::getGyroZ_count() {
+/* returns the gyroscope measurement in the z direction, raw 16-bit integer */
+int16_t ICM20689::getGyroZ_raw() {
 	return _gyroCounts[2];
 }
 

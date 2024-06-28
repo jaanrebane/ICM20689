@@ -58,12 +58,12 @@ class ICM20689 {
 	double  getGyroZ_dps();
 	double  getTemperature_C();
 
-	int16_t getAccelX_count();
-	int16_t getAccelY_count();
-	int16_t getAccelZ_count();
-	int16_t getGyroX_count();
-	int16_t getGyroY_count();
-	int16_t getGyroZ_count();
+	int16_t getAccelX_raw();
+	int16_t getAccelY_raw();
+	int16_t getAccelZ_raw();
+	int16_t getGyroX_raw();
+	int16_t getGyroY_raw();
+	int16_t getGyroZ_raw();
 
 	int    calibrateGyro();
 	double getGyroBiasX_rads();
