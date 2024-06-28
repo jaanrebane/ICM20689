@@ -102,7 +102,7 @@ class ICM20689 {
 	// data counts
 	int16_t _accCounts[3]  = {};
 	int16_t _gyroCounts[3] = {};
-	int16_t _tcounts       = 0;
+	int16_t _tCounts       = 0;
 	// data buffer
 	double  _acc[3]        = {};
 	double  _gyro[3]       = {};
