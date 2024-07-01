@@ -1,4 +1,21 @@
 {
   "editor.formatOnSave": true,
-  "cSpell.words": ["Dlpf", "FCHOICE", "SMPLRT", "SPIHS"]
+  "cSpell.words": [
+    "AUXCL",
+    "AUXDA",
+    "datasheet",
+    "Dlpf",
+    "FCHOICE",
+    "interruptable",
+    "Inven",
+    "MOSI",
+    "MSBFIRST",
+    "pinout",
+    "pullup",
+    "Pullups",
+    "SCLK",
+    "SMPLRT",
+    "SPIHS",
+    "VDDI"
+  ]
 }

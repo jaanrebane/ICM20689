@@ -114,10 +114,10 @@ class ICM20689 {
 	const double _tempScale  = 333.87f;
 	const double _tempOffset = 21.0f;
 	// configuration
-	AccelRange    _accelRange;
-	GyroRange     _gyroRange;
-	DlpfBandwidth _bandwidth;
-	uint8_t       _srd = 0;
+	AccelRange    _accelRange = ACCEL_RANGE_16G;
+	GyroRange     _gyroRange  = GYRO_RANGE_2000DPS;
+	DlpfBandwidth _bandwidth  = DLPF_BANDWIDTH_MAX;
+	uint8_t       _srd        = 0;
 	// gyro bias estimation
 	size_t _numSamples = 100;
 	double _gyroBD[3]  = {};

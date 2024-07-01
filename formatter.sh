@@ -1,2 +1,2 @@
 # formatter.sh
-find src/ -iname *.h -o -iname *.hpp -o -iname *.cpp -o -iname *.c | xargs clang-format -i
+find src/ examples/ -iname *.h -o -iname *.hpp -o -iname *.cpp -o -iname *.c -o -iname *.ino | xargs clang-format -i
