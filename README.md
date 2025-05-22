@@ -2,7 +2,12 @@
 
 Arduino library for communicating with the [ICM20689](https://invensense.tdk.com/products/motion-tracking/6-axis/icm-20689/) six-axis Inertial Measurement Units (IMU).
 
-This library should also work with **ICM-20608-G**.
+## Notes on ICM-20608-G compatibility
+This library should also work with [ICM-20608-G](https://invensense.tdk.com/products/motion-tracking/6-axis/icm-20608-2/). Register maps of the ICM-20689 and ICM-20608-G are very similar.
+
+As there doesn't seem to be any other ICM-20608-G Arduino libraries (yet) with I2C option, the WHO_AM_I register value of ICM-20608-G (0xAF) was added to the source code to get a functional I2C Arduino library for ICM-20608-G.
+
+To use an ICM-20608-G with this library, treat it as it would be an ICM-20689. I2C communication has been tested with ICM-20608-G on I2C address 0x68 connected to Arduino Mini. SPI has not been tested, but should also work without issues.
 
 ## Description
 
@@ -20,13 +25,6 @@ The ICM20689 samples the gyroscopes, and accelerometers with 16 bit analog to di
 ## Usage
 
 This library supports both I2C and SPI communication with the ICM20689.
-
-### ICM-20608-G
-This library should also work with ICM-20608-G. Register maps of the ICM-20689 and ICM-20608-G are very similar.
-
-As there doesn't seem to be any other ICM-20608-G Arduino libraries (yet) with I2C option, the WHO_AM_I register value of ICM-20608-G (0xAF) was added to the source code to get a functional I2C Arduino library for ICM-20608-G.
-
-To use an ICM-20608-G with this library, treat it as it would be an ICM-20689. I2C communication has been tested with ICM-20608 on I2C address 0x68 of Arduino Mini. SPI has not been tested, but should also work without issues.
 
 ### Installation
 
