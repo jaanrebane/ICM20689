@@ -43,8 +43,9 @@ int ICM20689::begin() {
 	if (writeRegister(PWR_MGMT_1, CLOCK_SEL_PLL) < 0) {
 		return -2;
 	}
-	// check the WHO AM I byte, expected value is 0x98 (decimal 152)
-	if (whoAmI() != 152) {
+	// check the WHO AM I byte, expected value is 0x98 (decimal 152) for ICM-20689
+	// or 0xAF (decimal 175) for ICM-20608-G
+	if ((whoAmI() != 152) && (whoAmI() != 175)) {
 		return -3;
 	}
 	// enable accelerometer and gyro
